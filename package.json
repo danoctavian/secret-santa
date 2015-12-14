@@ -1,0 +1,24 @@
+{
+  "name": "secret-santa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danoctavian/secret-santa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "twilio":  "^2.6.0",
+    "knuth-shuffle": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/danoctavian/secret-santa/issues"
+  },
+  "homepage": "https://github.com/danoctavian/secret-santa#readme"
+}
