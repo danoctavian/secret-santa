@@ -15,7 +15,8 @@
   "dependencies": {
     "express": "^4.13.3",
     "twilio":  "^2.6.0",
-    "knuth-shuffle": "*"
+    "knuth-shuffle": "*",
+    "underscore": "*"
   },
   "bugs": {
     "url": "https://github.com/danoctavian/secret-santa/issues"

@@ -2,7 +2,7 @@ var fs = require("fs")
 var express = require('express')
 var twilio = require('twilio')
 var shuffle = require('knuth-shuffle').knuthShuffle
-
+var _ = require("underscore")
 
 /* setup twilio */
 
@@ -15,14 +15,26 @@ var client = new twilio.RestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 function randomPairs(xs) {
   var shuffled = shuffle(xs)
 
-  return shuffled.map( x => {
-    return {first: x, second: getRandomFromBucket(xs.filter( e => e !== x))}
+  return shuffled.map(x => {
+    console.log(xs)
+    var filtered = xs.filter( e => e !== x)
+    var didRemove = filtered.length < xs.length
+    var val = {first: x, second: getRandomFromBucket(filtered)}
+    if (didRemove) filtered.push(x)
+    xs = filtered
+    return val
   })
 }
 
 function getRandomFromBucket(bucket) {
    var randomIndex = Math.floor(Math.random() * bucket.length)
    return bucket.splice(randomIndex, 1)[0]
+}
+
+function assert(condition, message) {
+    if (!condition) {
+        throw message || "Assertion failed";
+    }
 }
 
 var sendMessages = ms => {
@@ -52,10 +64,7 @@ var sendMessages = ms => {
 }
 
 
-var santaGroup = ["Daryl Moulder","Dora Timmer","Brantley Beaird","Pindi Albert", "Rogier van der Wacht","Cory Brandli","Cees Trouwborst","Winnie Huang","Sam Turner","Yumeng Zheng","Rosa Baum","Rajnish Garg","Tiffany Wang","Mike Lam","Matt Rubin","Dan Octavian","Eric Kennedy"]
-
-console.log(santaGroup.length)
-
+var santaGroup = ["Daryl Moulder","Dora Timmer","Brantley Beaird","Pindi Albert", "Rogier van der Wacht","Cory Brandli","Cees Trouwborst","Winnie Huang","Yumeng Zheng","Rosa Baum","Rajnish Garg","Tiffany Wang","Mike Lam","Matt Rubin","Dan Octavian","Eric Kennedy"]
 
 var numbers = JSON.parse(fs.readFileSync("goodNumbers.json"))
 
@@ -82,14 +91,24 @@ console.log(pplWithNumbers)
 var pairs = randomPairs(pplWithNumbers)
 
 //attach message 
-pairs.forEach(p => {
-  p.first.text = "Secret santa: Hey " + p.first.name + ". you will be buying a present for " + p.second.name + "."
+var msgs = pairs.map(p => {
+  var msg = {}
+  msg.text = "Secret santa #2: Hey " + p.first.name + ". you will be getting a present for " + p.second.name + "."
+  msg.number = p.first.number
+  return msg
 })
 
 
 //  pairs = [pairs.filter(p => p.first.name === "Dan Octavian")[0]]
 
-var msgs = pairs.map(p => { return p.first})
+var receivers = pairs.map(p => p.second.name)
+
+console.log(santaGroup)
+console.log(receivers)
+
+var assertion = _.isEqual(santaGroup.sort(), receivers.sort())
+console.log(assertion)
+assert(assertion)
 
 console.log(msgs)
 
